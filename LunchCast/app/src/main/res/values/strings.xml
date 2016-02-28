@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">LunchCast</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_full_name">Full name</string>
+    <string name="login_proceed">Proceed</string>
+    <string name="login_existing_user">Login</string>
+    <string name="login_register_new_user">Register new user</string>
+
+    <string name="home_existing">Existing orders</string>
+    <string name="home_create">Create a new order</string>
+    <string name="home_subscriptions">Manage subscriptions</string>
 </resources>

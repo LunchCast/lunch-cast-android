@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+              tools:context="com.rockets12.lunchcast.fragment.HomeFragment">
+
+    <Button
+        android:id="@+id/button_home_orders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/home_existing"/>
+
+    <Button
+        android:id="@+id/button_home_create"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/home_create"/>
+
+    <Button
+        android:id="@+id/button_home_subscriptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/home_subscriptions"/>
+
+</LinearLayout>
