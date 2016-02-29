@@ -1,6 +1,7 @@
 package com.rockets12.lunchcast.fragment;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.rockets12.lunchcast.CallbackInterface;
 import com.rockets12.lunchcast.R;
 import com.rockets12.lunchcast.adapter.TagAdapter;
 import com.rockets12.lunchcast.backendless.Tag;
@@ -32,6 +34,8 @@ public class SubscriptionsFragment extends Fragment {
     private ListView mList;
     private TagAdapter mAdapter;
 
+    private CallbackInterface mCallback;
+
     public SubscriptionsFragment() {
         // Required empty public constructor
     }
@@ -43,6 +47,23 @@ public class SubscriptionsFragment extends Fragment {
         args.putSerializable(ARG_PARAM2, userTags);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof CallbackInterface) {
+            mCallback = (CallbackInterface) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallback = null;
     }
 
     @Override
@@ -68,12 +89,13 @@ public class SubscriptionsFragment extends Fragment {
                 if (mUserTags.contains(clickedTag)) {
                     // remove tag from user list
                     mUserTags.remove(clickedTag);
+                    mCallback.unsubscribeFromTag(clickedTag);
                 } else {
                     // add tag to user list
                     mUserTags.add(clickedTag);
+                    mCallback.subscribeToTag(clickedTag);
                 }
                 mAdapter.setUserTags(mUserTags);
-                //TODO inform activity about new tag.
             }
         });
         return v;

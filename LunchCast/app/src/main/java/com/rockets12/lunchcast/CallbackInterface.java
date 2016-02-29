@@ -1,5 +1,7 @@
 package com.rockets12.lunchcast;
 
+import com.rockets12.lunchcast.backendless.Tag;
+
 /**
  * Created by Stevan Kovacevic on 2/23/16.
  */
@@ -14,4 +16,8 @@ public interface CallbackInterface {
     public void createNewOrder();
 
     public void displaySubscriptions();
+
+    public void subscribeToTag(Tag tag);
+
+    public void unsubscribeFromTag(Tag tag);
 }

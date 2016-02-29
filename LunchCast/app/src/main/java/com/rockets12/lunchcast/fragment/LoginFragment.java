@@ -25,7 +25,7 @@ public class LoginFragment extends Fragment {
     Button mButtonProceed;
     TextView mTextOption;
 
-    private boolean mIsRegistration = false;
+    private boolean mIsRegistrationActive = false;
 
     private CallbackInterface mCallback;
 
@@ -72,22 +72,23 @@ public class LoginFragment extends Fragment {
         mTextOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mIsRegistration) {
-                    mTextOption.setText(getString(R.string.login_existing_user));
-                    mEditName.setVisibility(View.GONE);
-                    mIsRegistration = false;
-                } else {
+                if (mIsRegistrationActive) {
                     mTextOption.setText(getString(R.string.login_register_new_user));
+                    mEditName.setVisibility(View.GONE);
+                    mIsRegistrationActive = false;
+                } else {
+                    mTextOption.setText(getString(R.string.login_existing_user));
                     mEditName.setVisibility(View.VISIBLE);
-                    mIsRegistration = true;
+                    mIsRegistrationActive = true;
                 }
             }
         });
+        mTextOption.setText(getString(R.string.login_register_new_user));
 
         mButtonProceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mIsRegistration) {
+                if (mIsRegistrationActive) {
                     mCallback.registerUser(mEditEmail.getText().toString(), mEditPassword.getText
                             ().toString(), mEditName.getText().toString());
                 } else {

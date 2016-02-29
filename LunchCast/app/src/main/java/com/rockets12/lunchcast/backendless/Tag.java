@@ -155,6 +155,10 @@ public class Tag implements Serializable {
         Backendless.Data.of(Tag.class).find(query, callback);
     }
 
+    public static void findAllAsync(AsyncCallback<BackendlessCollection<Tag>> callback) {
+        Backendless.Data.of(Tag.class).find(callback);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

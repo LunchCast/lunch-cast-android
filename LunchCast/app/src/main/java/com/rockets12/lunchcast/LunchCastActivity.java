@@ -5,11 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.backendless.Backendless;
+import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
-import com.rockets12.lunchcast.backendless.LunchCastUser;
+import com.backendless.persistence.BackendlessDataQuery;
 import com.rockets12.lunchcast.backendless.Tag;
+import com.rockets12.lunchcast.backendless.UserSubscription;
 import com.rockets12.lunchcast.fragment.HomeFragment;
 import com.rockets12.lunchcast.fragment.LoginFragment;
 import com.rockets12.lunchcast.fragment.SubscriptionsFragment;
@@ -24,7 +26,8 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
     public static final String FRAGMENT_HOME = "home";
     public static final String FRAGMENT_SUBSCRIPTIONS = "subscriptions";
 
-    private LunchCastUser mUser;
+    private BackendlessUser mUser;
+    private UserSubscription mUserSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,7 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
         setContentView(R.layout.activity_lunch_cast);
         Backendless.initApp(this, Constants.BACKENDLESS_APP_ID, Constants.BACKENDLESS_SECRET_KEY,
                 Constants.BACKENDLESS_VERSION);
+        Backendless.Data.mapTableToClass("Users", BackendlessUser.class);
         displayLoginFragment();
     }
 
@@ -41,27 +45,42 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
     }
 
     private void displayHomeFragment() {
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, HomeFragment
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, HomeFragment
                 .newInstance(), FRAGMENT_HOME).commit();
     }
 
     private void displaySubscriptionsFragment(ArrayList<Tag> tags) {
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,
-                SubscriptionsFragment.newInstance(tags, (ArrayList<Tag>) mUser.getSubscriptions()),
-                FRAGMENT_SUBSCRIPTIONS).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                SubscriptionsFragment.newInstance(tags, (ArrayList<Tag>) mUserSubscription
+                        .getTags()), FRAGMENT_SUBSCRIPTIONS).commit();
     }
 
     @Override
     public void registerUser(String email, String password, String fullName) {
-        LunchCastUser user = new LunchCastUser();
+        BackendlessUser user = new BackendlessUser();
         user.setEmail(email);
         user.setPassword(password);
-        user.setName(fullName);
+        user.setProperty("name", fullName);
         Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
             @Override
             public void handleResponse(BackendlessUser backendlessUser) {
                 Log.d(TAG, "user created: " + backendlessUser.getEmail());
-                mUser = (LunchCastUser) backendlessUser;
+                //create empty user subscription on login
+                mUserSubscription = new UserSubscription();
+                mUserSubscription.setTags(new ArrayList<Tag>());
+                mUserSubscription.setUserId(backendlessUser.getUserId());
+                mUserSubscription.saveAsync(new AsyncCallback<UserSubscription>() {
+                    @Override
+                    public void handleResponse(UserSubscription userSubscription) {
+                        mUserSubscription = userSubscription;
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault backendlessFault) {
+
+                    }
+                });
+                loginUser(backendlessUser.getEmail(), backendlessUser.getPassword());
             }
 
             @Override
@@ -76,8 +95,32 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
         Backendless.UserService.login(email, password, new AsyncCallback<BackendlessUser>() {
             @Override
             public void handleResponse(BackendlessUser backendlessUser) {
-                Log.d(TAG, "user created: " + backendlessUser.getEmail());
-                mUser = (LunchCastUser) backendlessUser;
+                Log.d(TAG, "user logged in: " + backendlessUser.getEmail());
+                mUser = backendlessUser;
+                if (mUserSubscription == null) {
+                    // load user subscription object
+                    BackendlessDataQuery query = new BackendlessDataQuery();
+                    query.setWhereClause("userId = '" + mUser.getObjectId() + "'");
+                    UserSubscription
+                            .findAsync(
+                                    query,
+                                    new AsyncCallback<BackendlessCollection<UserSubscription>>() {
+                                        @Override
+                                        public void handleResponse
+                                                (BackendlessCollection<UserSubscription>
+                                                         userSubscriptionBackendlessCollection) {
+                                            mUserSubscription =
+                                                    userSubscriptionBackendlessCollection.getData
+                                                            ().get(0);
+                                        }
+
+                                        @Override
+                                        public void handleFault(BackendlessFault backendlessFault) {
+
+                                        }
+                                    });
+                }
+                displayHomeFragment();
             }
 
             @Override
@@ -99,6 +142,49 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
 
     @Override
     public void displaySubscriptions() {
+        Tag.findAllAsync(new AsyncCallback<BackendlessCollection<Tag>>() {
+            @Override
+            public void handleResponse(BackendlessCollection<Tag> tagBackendlessCollection) {
+                ArrayList<Tag> tags = (ArrayList<Tag>) tagBackendlessCollection.getData();
+                displaySubscriptionsFragment(tags);
+            }
 
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+
+            }
+        });
+    }
+
+    @Override
+    public void subscribeToTag(Tag tag) {
+        mUserSubscription.getTags().add(tag);
+        mUserSubscription.saveAsync(new AsyncCallback<UserSubscription>() {
+            @Override
+            public void handleResponse(UserSubscription userSubscription) {
+                mUserSubscription = userSubscription;
+            }
+
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+                Log.e(TAG, backendlessFault.toString());
+            }
+        });
+    }
+
+    @Override
+    public void unsubscribeFromTag(Tag tag) {
+        mUserSubscription.getTags().remove(tag);
+        mUserSubscription.saveAsync(new AsyncCallback<UserSubscription>() {
+            @Override
+            public void handleResponse(UserSubscription userSubscription) {
+                mUserSubscription = userSubscription;
+            }
+
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+                Log.e(TAG, backendlessFault.toString());
+            }
+        });
     }
 }

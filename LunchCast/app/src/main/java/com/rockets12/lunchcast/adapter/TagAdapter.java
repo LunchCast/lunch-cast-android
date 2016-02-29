@@ -50,7 +50,7 @@ public class TagAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.item_tag, null);
             holder = new TagViewHolder();
-            holder.tag = (TextView) convertView.findViewWithTag(R.id.text_tag);
+            holder.tag = (TextView) convertView.findViewById(R.id.text_tag);
             convertView.setTag(holder);
         } else {
             holder = (TagViewHolder) convertView.getTag();
