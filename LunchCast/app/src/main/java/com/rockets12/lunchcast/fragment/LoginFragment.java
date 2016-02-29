@@ -2,11 +2,13 @@ package com.rockets12.lunchcast.fragment;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -88,6 +90,9 @@ public class LoginFragment extends Fragment {
         mButtonProceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService
+                        (Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(mButtonProceed.getWindowToken(), 0);
                 if (mIsRegistrationActive) {
                     mCallback.registerUser(mEditEmail.getText().toString(), mEditPassword.getText
                             ().toString(), mEditName.getText().toString());

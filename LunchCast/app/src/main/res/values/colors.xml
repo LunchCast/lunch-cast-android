@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="colorBackground">#323632</color>
+
     <color name="colorTagBackgroundOff">@android:color/darker_gray</color>
     <color name="colorTagBackgroundOn">#b30000</color>
 </resources>
