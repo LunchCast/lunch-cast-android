@@ -5,22 +5,28 @@
               android:orientation="vertical"
               tools:context="com.rockets12.lunchcast.fragment.HomeFragment">
 
-    <Button
+    <ImageButton
         android:id="@+id/button_home_orders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/home_existing"/>
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/orders_button"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/button_home_create"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/home_create"/>
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/create_your_order_button"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/button_home_subscriptions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/home_subscriptions"/>
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/subscriptions_button"/>
 
 </LinearLayout>

@@ -6,12 +6,14 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.persistence.BackendlessDataQuery;
 
-public class Order {
+import java.io.Serializable;
+
+public class Order implements Serializable {
     private String ownerId;
     private String order_time;
     private java.util.Date updated;
     private String objectId;
-    private String state;
+    private Integer state;
     private java.util.Date created;
     private Restaurant restaurant;
     private BackendlessUser order_creator;
@@ -36,11 +38,11 @@ public class Order {
         return objectId;
     }
 
-    public String getState() {
+    public Integer getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(Integer state) {
         this.state = state;
     }
 
@@ -176,7 +178,8 @@ public class Order {
         }
     }
 
-    public static void findAsync(BackendlessDataQuery query, AsyncCallback<BackendlessCollection<Order>> callback) {
+    public static void findAsync(BackendlessDataQuery query,
+                                 AsyncCallback<BackendlessCollection<Order>> callback) {
         Backendless.Data.of(Order.class).find(query, callback);
     }
 }

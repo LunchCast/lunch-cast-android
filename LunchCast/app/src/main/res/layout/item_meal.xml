@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/text_meal_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:id="@+id/text_meal_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@id/text_meal_price"
+        android:layout_toRightOf="@id/text_meal_title"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/isprekidana_linija_izmedju_jela_i_cene"/>
+
+    <TextView
+        android:id="@+id/text_meal_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/text_meal_title"
+        android:singleLine="false"/>
+
+    <ImageView
+        android:id="@+id/image_button_meal_plus"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/text_meal_price"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/plus_button"/>
+
+    <TextView
+        android:id="@+id/text_meal_amount"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignBaseline="@id/image_button_meal_plus"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@id/image_button_meal_plus"
+        android:background="@drawable/space_for_amount"
+        android:gravity="center"/>
+
+    <ImageView
+        android:id="@+id/image_button_meal_minus"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_alignBaseline="@id/image_button_meal_plus"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/text_meal_price"
+        android:layout_toLeftOf="@id/text_meal_amount"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/minus_button"/>
+
+</RelativeLayout>

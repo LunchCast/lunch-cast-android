@@ -7,7 +7,9 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.geo.GeoPoint;
 import com.backendless.persistence.BackendlessDataQuery;
 
-public class Meal {
+import java.io.Serializable;
+
+public class Meal implements Serializable {
     private String ownerId;
     private java.util.Date created;
     private String price;
@@ -167,7 +169,9 @@ public class Meal {
         }
     }
 
-    public static void findAsync(BackendlessDataQuery query, AsyncCallback<BackendlessCollection<Meal>> callback) {
+    public static void findAsync(BackendlessDataQuery query,
+                                 AsyncCallback<BackendlessCollection<Meal>> callback) {
         Backendless.Data.of(Meal.class).find(query, callback);
     }
+
 }

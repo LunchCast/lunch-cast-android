@@ -10,13 +10,19 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
+import com.rockets12.lunchcast.backendless.Order;
+import com.rockets12.lunchcast.backendless.OrderItem;
+import com.rockets12.lunchcast.backendless.Restaurant;
 import com.rockets12.lunchcast.backendless.Tag;
 import com.rockets12.lunchcast.backendless.UserSubscription;
 import com.rockets12.lunchcast.fragment.HomeFragment;
 import com.rockets12.lunchcast.fragment.LoginFragment;
+import com.rockets12.lunchcast.fragment.MealsFragment;
+import com.rockets12.lunchcast.fragment.RestaurantsFragment;
 import com.rockets12.lunchcast.fragment.SubscriptionsFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class LunchCastActivity extends AppCompatActivity implements CallbackInterface {
 
@@ -25,6 +31,12 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
     public static final String FRAGMENT_LOGIN = "login";
     public static final String FRAGMENT_HOME = "home";
     public static final String FRAGMENT_SUBSCRIPTIONS = "subscriptions";
+    public static final String FRAGMENT_RESTAURANTS = "restaurants";
+    public static final String FRAGMENT_MEALS = "meals";
+
+    public static final int ORDER_STATE_OPEN = 0;
+    public static final int ORDER_STATE_CLOSED = 1;
+    public static final int ORDER_STATE_EATEN = 2;
 
     private BackendlessUser mUser;
     private UserSubscription mUserSubscription;
@@ -53,6 +65,17 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 SubscriptionsFragment.newInstance(tags, (ArrayList<Tag>) mUserSubscription
                         .getTags()), FRAGMENT_SUBSCRIPTIONS).commit();
+    }
+
+    private void displayRestaurantsFragment(ArrayList<Restaurant> restaurants) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                RestaurantsFragment.newInstance(restaurants), FRAGMENT_RESTAURANTS).commit();
+    }
+
+    private void displayMealsFragment(Order order, Restaurant restaurant) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                MealsFragment.newInstance(order, restaurant), FRAGMENT_MEALS)
+                .commit();
     }
 
     @Override
@@ -137,7 +160,19 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
 
     @Override
     public void createNewOrder() {
+        Restaurant.findAllAsync(new AsyncCallback<BackendlessCollection<Restaurant>>() {
+            @Override
+            public void handleResponse(BackendlessCollection<Restaurant> tagBackendlessCollection) {
+                ArrayList<Restaurant> tags = (ArrayList<Restaurant>) tagBackendlessCollection
+                        .getData();
+                displayRestaurantsFragment(tags);
+            }
 
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+
+            }
+        });
     }
 
     @Override
@@ -184,6 +219,46 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
             @Override
             public void handleFault(BackendlessFault backendlessFault) {
                 Log.e(TAG, backendlessFault.toString());
+            }
+        });
+    }
+
+    @Override
+    public void onRestaurantClicked(Restaurant r) {
+        displayMealsFragment(null, r);
+    }
+
+    @Override
+    public void createOrder(final Restaurant res, final List<OrderItem> orderItems) {
+        Log.d(TAG, "creating order for res:" + res.getName());
+        Order newOrder = new Order();
+        newOrder.setRestaurant(res);
+        newOrder.setOrder_creator(mUser);
+        newOrder.setState(ORDER_STATE_OPEN);
+        newOrder.saveAsync(new AsyncCallback<Order>() {
+            @Override
+            public void handleResponse(Order order) {
+                for (OrderItem item : orderItems) {
+                    item.setOrder_id(order);
+                    item.setOrderer(mUser);
+                    item.saveAsync(new AsyncCallback<OrderItem>() {
+                        @Override
+                        public void handleResponse(OrderItem orderItem) {
+
+                        }
+
+                        @Override
+                        public void handleFault(BackendlessFault backendlessFault) {
+
+                        }
+                    });
+                }
+                displayHomeFragment();
+            }
+
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+                Log.d(TAG, "error creating order: " + backendlessFault.toString());
             }
         });
     }

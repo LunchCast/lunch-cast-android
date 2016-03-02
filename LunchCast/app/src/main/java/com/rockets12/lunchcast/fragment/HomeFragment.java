@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.rockets12.lunchcast.CallbackInterface;
 import com.rockets12.lunchcast.R;
@@ -16,7 +17,7 @@ public class HomeFragment extends Fragment {
 
     private CallbackInterface mCallback;
 
-    private Button mButtonOrders, mButtonCreate, mButtonSubscriptions;
+    private ImageButton mButtonOrders, mButtonCreate, mButtonSubscriptions;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -40,21 +41,21 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        mButtonOrders = (Button)view.findViewById(R.id.button_home_orders);
+        mButtonOrders = (ImageButton)view.findViewById(R.id.button_home_orders);
         mButtonOrders.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCallback.displayOrders();
             }
         });
-        mButtonCreate = (Button)view.findViewById(R.id.button_home_create);
+        mButtonCreate = (ImageButton)view.findViewById(R.id.button_home_create);
         mButtonCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCallback.createNewOrder();
             }
         });
-        mButtonSubscriptions = (Button)view.findViewById(R.id.button_home_subscriptions);
+        mButtonSubscriptions = (ImageButton)view.findViewById(R.id.button_home_subscriptions);
         mButtonSubscriptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

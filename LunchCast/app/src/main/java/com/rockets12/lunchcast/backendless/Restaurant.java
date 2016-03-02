@@ -2,10 +2,14 @@ package com.rockets12.lunchcast.backendless;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
+import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
+import com.backendless.geo.GeoPoint;
 import com.backendless.persistence.BackendlessDataQuery;
 
-public class Restaurant {
+import java.io.Serializable;
+
+public class Restaurant implements Serializable {
     private String ownerId;
     private String objectId;
     private String address;
@@ -13,6 +17,7 @@ public class Restaurant {
     private java.util.Date updated;
     private String name;
     private String telefon;
+    private Integer minAmount;
     private Integer eta;
     private java.util.List<Tag> tags;
     private java.util.List<Meal> meals;
@@ -55,6 +60,14 @@ public class Restaurant {
 
     public void setTelefon(String telefon) {
         this.telefon = telefon;
+    }
+
+    public Integer getMinAmount() {
+        return minAmount;
+    }
+
+    public void setMinAmount(Integer minAmount) {
+        this.minAmount = minAmount;
     }
 
     public Integer getEta() {
@@ -193,7 +206,12 @@ public class Restaurant {
         }
     }
 
-    public static void findAsync(BackendlessDataQuery query, AsyncCallback<BackendlessCollection<Restaurant>> callback) {
+    public static void findAsync(BackendlessDataQuery query,
+                                 AsyncCallback<BackendlessCollection<Restaurant>> callback) {
         Backendless.Data.of(Restaurant.class).find(query, callback);
+    }
+
+    public static void findAllAsync(AsyncCallback<BackendlessCollection<Restaurant>> callback) {
+        Backendless.Data.of(Restaurant.class).find(callback);
     }
 }

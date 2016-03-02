@@ -11,7 +11,7 @@
     <string name="login_existing_user">Login</string>
     <string name="login_register_new_user">Register new user</string>
 
-    <string name="home_existing">Existing orders</string>
-    <string name="home_create">Create a new order</string>
-    <string name="home_subscriptions">Manage subscriptions</string>
+    <string name="home_existing">Orders</string>
+    <string name="home_create">Create order</string>
+    <string name="home_subscriptions">Subscriptions</string>
 </resources>
