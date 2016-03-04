@@ -18,6 +18,7 @@ import com.rockets12.lunchcast.backendless.UserSubscription;
 import com.rockets12.lunchcast.fragment.HomeFragment;
 import com.rockets12.lunchcast.fragment.LoginFragment;
 import com.rockets12.lunchcast.fragment.MealsFragment;
+import com.rockets12.lunchcast.fragment.OrdersFragment;
 import com.rockets12.lunchcast.fragment.RestaurantsFragment;
 import com.rockets12.lunchcast.fragment.SubscriptionsFragment;
 
@@ -33,6 +34,7 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
     public static final String FRAGMENT_SUBSCRIPTIONS = "subscriptions";
     public static final String FRAGMENT_RESTAURANTS = "restaurants";
     public static final String FRAGMENT_MEALS = "meals";
+    public static final String FRAGMENT_ORDERS = "orders";
 
     public static final int ORDER_STATE_OPEN = 0;
     public static final int ORDER_STATE_CLOSED = 1;
@@ -75,6 +77,12 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
     private void displayMealsFragment(Order order, Restaurant restaurant) {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 MealsFragment.newInstance(order, restaurant), FRAGMENT_MEALS)
+                .commit();
+    }
+
+    private void displayOrdersFragment(ArrayList<Order> orders) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                OrdersFragment.newInstance(orders), FRAGMENT_ORDERS)
                 .commit();
     }
 
@@ -155,7 +163,20 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
 
     @Override
     public void displayOrders() {
+        BackendlessDataQuery query = new BackendlessDataQuery();
+        query.setWhereClause("state in (0,1)");
+        Order.findAsync(query, new AsyncCallback<BackendlessCollection<Order>>() {
+            @Override
+            public void handleResponse(BackendlessCollection<Order> orderBackendlessCollection) {
+                ArrayList<Order> orders = (ArrayList<Order>) orderBackendlessCollection.getData();
+                displayOrdersFragment(orders);
+            }
 
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+
+            }
+        });
     }
 
     @Override
@@ -226,6 +247,11 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
     @Override
     public void onRestaurantClicked(Restaurant r) {
         displayMealsFragment(null, r);
+    }
+
+    @Override
+    public void onOrderClicked(Order o) {
+
     }
 
     @Override

@@ -12,7 +12,9 @@ import android.widget.ListView;
 
 import com.rockets12.lunchcast.CallbackInterface;
 import com.rockets12.lunchcast.R;
+import com.rockets12.lunchcast.adapter.OrderAdapter;
 import com.rockets12.lunchcast.adapter.RestaurantAdapter;
+import com.rockets12.lunchcast.backendless.Order;
 import com.rockets12.lunchcast.backendless.Restaurant;
 
 import java.util.ArrayList;
@@ -23,25 +25,25 @@ import java.util.List;
  * Use the {@link OrdersFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RestaurantsFragment extends Fragment {
+public class OrdersFragment extends Fragment {
 
     private static final String ARG_RES = "res";
 
     private CallbackInterface mCallback;
 
-    private List<Restaurant> mRestaurants;
+    private List<Order> mOrders;
 
     private ListView mList;
-    private RestaurantAdapter mAdapter;
+    private OrderAdapter mAdapter;
 
-    public RestaurantsFragment() {
+    public OrdersFragment() {
         // Required empty public constructor
     }
 
-    public static OrdersFragment newInstance(ArrayList<Restaurant> restaurants) {
+    public static OrdersFragment newInstance(ArrayList<Order> orders) {
         OrdersFragment fragment = new OrdersFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_RES, restaurants);
+        args.putSerializable(ARG_RES, orders);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,7 +69,7 @@ public class RestaurantsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mRestaurants = (ArrayList<Restaurant>) getArguments().getSerializable(ARG_RES);
+            mOrders = (ArrayList<Order>) getArguments().getSerializable(ARG_RES);
         }
     }
 
@@ -75,14 +77,14 @@ public class RestaurantsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_restaurants, container, false);
-        mList = (ListView) v.findViewById(R.id.list_restaurants);
-        mAdapter = new RestaurantAdapter(getActivity(), mRestaurants);
+        View v = inflater.inflate(R.layout.fragment_orders, container, false);
+        mList = (ListView) v.findViewById(R.id.list_orders);
+        mAdapter = new OrderAdapter(getActivity(), mOrders);
         mList.setAdapter(mAdapter);
         mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mCallback.onRestaurantClicked(mRestaurants.get(position));
+                mCallback.onOrderClicked(mOrders.get(position));
             }
         });
         return v;

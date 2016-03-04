@@ -1,5 +1,6 @@
 package com.rockets12.lunchcast;
 
+import com.rockets12.lunchcast.backendless.Order;
 import com.rockets12.lunchcast.backendless.OrderItem;
 import com.rockets12.lunchcast.backendless.Restaurant;
 import com.rockets12.lunchcast.backendless.Tag;
@@ -26,6 +27,8 @@ public interface CallbackInterface {
     public void unsubscribeFromTag(Tag tag);
 
     public void onRestaurantClicked(Restaurant r);
+
+    public void onOrderClicked(Order o);
 
     public void createOrder(Restaurant res, List<OrderItem> orderItems);
 }
