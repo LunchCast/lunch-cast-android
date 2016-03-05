@@ -38,8 +38,8 @@ public class RestaurantsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static OrdersFragment newInstance(ArrayList<Restaurant> restaurants) {
-        OrdersFragment fragment = new OrdersFragment();
+    public static RestaurantsFragment newInstance(ArrayList<Restaurant> restaurants) {
+        RestaurantsFragment fragment = new RestaurantsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_RES, restaurants);
         fragment.setArguments(args);

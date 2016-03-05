@@ -18,6 +18,7 @@ import com.rockets12.lunchcast.backendless.UserSubscription;
 import com.rockets12.lunchcast.fragment.HomeFragment;
 import com.rockets12.lunchcast.fragment.LoginFragment;
 import com.rockets12.lunchcast.fragment.MealsFragment;
+import com.rockets12.lunchcast.fragment.OrderDetailsFragment;
 import com.rockets12.lunchcast.fragment.OrdersFragment;
 import com.rockets12.lunchcast.fragment.RestaurantsFragment;
 import com.rockets12.lunchcast.fragment.SubscriptionsFragment;
@@ -35,6 +36,7 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
     public static final String FRAGMENT_RESTAURANTS = "restaurants";
     public static final String FRAGMENT_MEALS = "meals";
     public static final String FRAGMENT_ORDERS = "orders";
+    public static final String FRAGMENT_ORDER_DETAILS = "orderDetails";
 
     public static final int ORDER_STATE_OPEN = 0;
     public static final int ORDER_STATE_CLOSED = 1;
@@ -83,6 +85,12 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
     private void displayOrdersFragment(ArrayList<Order> orders) {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 OrdersFragment.newInstance(orders), FRAGMENT_ORDERS)
+                .commit();
+    }
+
+    private void displayOrderDetailsFragment(Order order, ArrayList<OrderItem> orderItems) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                OrderDetailsFragment.newInstance(orderItems, mUser, order), FRAGMENT_ORDER_DETAILS)
                 .commit();
     }
 
@@ -250,8 +258,22 @@ public class LunchCastActivity extends AppCompatActivity implements CallbackInte
     }
 
     @Override
-    public void onOrderClicked(Order o) {
+    public void onOrderClicked(final Order o) {
+        BackendlessDataQuery query = new BackendlessDataQuery();
+        query.setWhereClause("order_id.objectId = '" + o.getObjectId() + "'");
+        OrderItem.findAsync(query, new AsyncCallback<BackendlessCollection<OrderItem>>() {
+            @Override
+            public void handleResponse(BackendlessCollection<OrderItem>
+                                               orderItemBackendlessCollection) {
+                displayOrderDetailsFragment(o, (ArrayList<OrderItem>)
+                        orderItemBackendlessCollection.getData());
+            }
 
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+
+            }
+        });
     }
 
     @Override
